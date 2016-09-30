@@ -1,0 +1,28 @@
+{
+  "name": "border",
+  "version": "0.0.1",
+  "description": "Let functions configure their arguments.",
+  "main": "index.js",
+  "scripts": {
+    "test": "node test.js"
+  },
+  "dependencies": {
+    "@akbr/get": "^1.0.3",
+    "shallowequal": "^0.2.2"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/akbr/border.git"
+  },
+  "keywords": [
+    "wrapper",
+    "state",
+    "cache"
+  ],
+  "author": "Aaron Rieke",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/akbr/border/issues"
+  },
+  "homepage": "https://github.com/akbr/border#readme"
+}
