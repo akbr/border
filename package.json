@@ -1,5 +1,5 @@
 {
-  "name": "border",
+  "name": "@akbr/border",
   "version": "0.0.1",
   "description": "Let functions configure their arguments.",
   "main": "index.js",
