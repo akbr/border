@@ -1,5 +1,7 @@
 # border :construction:
 
-**Let functions configure their arguments.**
+**A wrapper that configures functions' arguments, provides caching, and more.**
 
-No docs yet. See `index.js` and `test.js`.
+Useful for avoiding boilerplate in small modules that are invoked inside a hot loop (e.g., for a game engine).
+
+See `test.js` for documentation.

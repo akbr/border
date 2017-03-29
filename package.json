@@ -1,7 +1,7 @@
 {
   "name": "@akbr/border",
-  "version": "0.0.1",
-  "description": "Let functions configure their arguments.",
+  "version": "1.0.0",
+  "description": "Modify functions' arguments.",
   "main": "index.js",
   "scripts": {
     "test": "node test.js"

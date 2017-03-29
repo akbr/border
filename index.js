@@ -1,20 +1,20 @@
-var get = require("@akbr/get");
-var shallowEqual = require("shallowequal");
+var get = require('@akbr/get');
+var shallowEqual = require('shallowequal');
 
 module.exports = function border(fn, options = {}) {
   var {
-    // arguments, // number, array of numbers, (arguments) => [args]
+    init,
+    // argument(s), // number, array of numbers, (arguments) => [args]
     path, // refers to first argument
     paths, // replaces path, expects object of paths {0: path, 1: path}
     cache, // arg number
-    comparator = "reference",
-    injectCache = false,
-    init
+    comparator = 'reference',
+    injectCache = false
   } = options;
 
   var argConfig = options.arguments !== undefined ? options.arguments : options.argument;
-  var argConfigType = Array.isArray(argConfig) ? "array" : typeof(argConfig);
-  var cacheEnabled = typeof(cache) === "number";
+  var argConfigType = Array.isArray(argConfig) ? 'array' : typeof(argConfig);
+  var cacheEnabled = typeof(cache) === 'number';
 
   // ---
 
@@ -27,11 +27,11 @@ module.exports = function border(fn, options = {}) {
     let args;
     if (argConfig === undefined) {
       args = Array.prototype.slice.call(arguments);
-    } else if (argConfigType === "number") {
+    } else if (argConfigType === 'number') {
       args = [arguments[argConfig]];
-    } else if (argConfigType === "array") {
+    } else if (argConfigType === 'array') {
       args = argConfig.map(index => arguments[index]);
-    } else if (argConfigType === "function") {
+    } else if (argConfigType === 'function') {
       args = argConfig.apply(argConfig, arguments);
     }
 
@@ -50,14 +50,14 @@ module.exports = function border(fn, options = {}) {
     if (cacheEnabled) {
       cacheTarget = args[cache];
       
-      if (comparator === "reference") {
+      if (comparator === 'reference') {
         isNew = cacheTarget !== cacheData;
-      } else if (comparator === "shallow") {
+      } else if (comparator === 'shallow') {
         isNew = !shallowEqual(cacheTarget, cacheData);
-      } else if (typeof(comparator) === "function") {
+      } else if (typeof(comparator) === 'function') {
         isNew = !comparator(cacheTarget, cacheData);
       } else {
-        throw new Error("Invalid comparator supplied:", comparator);
+        throw new Error('Invalid comparator supplied:', comparator);
       }
 
       if (!isNew) {
