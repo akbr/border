@@ -33,6 +33,10 @@ module.exports = function border(fn, options = {}) {
       args = argConfig.map(index => arguments[index]);
     } else if (argConfigType === 'function') {
       args = argConfig.apply(argConfig, arguments);
+
+      if (!args) {
+        return;
+      }
     }
 
     // Path into specified arguments

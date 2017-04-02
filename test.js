@@ -41,6 +41,11 @@ let complex = border((a, b, c) => a + b + c, {
 });
 assert.equal(complex(1, 2, 3), 9);
 
+let aborted = border (x => assert.equal(0, 1), {
+  arguments: () => null // Stops everything
+});
+aborted();
+
 // Step 3: Pathing
 // {path: string, arr}
 // {path: obj or arr of paths}
