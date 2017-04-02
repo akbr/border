@@ -1,31 +1,24 @@
 var get = require('@akbr/get');
-var shallowEqual = require('shallowequal');
 
 module.exports = function border(fn, options = {}) {
-  var {
-    init,
-    // argument(s), // number, array of numbers, (arguments) => [args]
-    path, // refers to first argument
-    paths, // replaces path, expects object of paths {0: path, 1: path}
-    cache, // arg number
-    comparator = 'reference',
-    injectCache = false
-  } = options;
+  // argument, arguments
+  const argConfig = options.argument || options.arguments;
+  const argConfigType = Array.isArray(argConfig) ? 'array' : typeof(argConfig);
+  // path, paths
+  const pathsConfig = options.path || options.paths;
+  const pathsType = typeof(pathsConfig);
+  // init
+  const init = options.init;
+  // shouldUpdate
+  const shouldUpdate = options.shouldUpdate;
 
-  var argConfig = options.arguments !== undefined ? options.arguments : options.argument;
-  var argConfigType = Array.isArray(argConfig) ? 'array' : typeof(argConfig);
-  var cacheEnabled = typeof(cache) === 'number';
-
-  // ---
-
-  var hasRun;
-  var cacheData;
-  var result;
+  var needsInit = init;
+  var cache;
 
   return function () {
-    // Prepare an array of arguments
+    // Prepare arguments
     let args;
-    if (argConfig === undefined) {
+    if (argConfigType === 'undefined') {
       args = Array.prototype.slice.call(arguments);
     } else if (argConfigType === 'number') {
       args = [arguments[argConfig]];
@@ -33,57 +26,37 @@ module.exports = function border(fn, options = {}) {
       args = argConfig.map(index => arguments[index]);
     } else if (argConfigType === 'function') {
       args = argConfig.apply(argConfig, arguments);
-
-      if (!args) {
-        return;
+      if (!Array.isArray(args)) {
+        args = [];
       }
     }
 
     // Path into specified arguments
-    if (paths) {
-      for (let i in paths) {
-        args[i] = get(args[i], paths[i]);
+    if (pathsType === 'object') {
+      for (let i in pathsConfig) {
+        args[i] = get(args[i], pathsConfig[i]);
       }
-    } else if (path) {
-      args[0] = get(args[0], path);
+    } else if (pathsType === 'string') {
+      args[0] = get(args[0], pathsConfig);
     }
 
-    // Check cache, if applicable
-    let cacheTarget;
-    let isNew;
-    if (cacheEnabled) {
-      cacheTarget = args[cache];
-      
-      if (comparator === 'reference') {
-        isNew = cacheTarget !== cacheData;
-      } else if (comparator === 'shallow') {
-        isNew = !shallowEqual(cacheTarget, cacheData);
-      } else if (typeof(comparator) === 'function') {
-        isNew = !comparator(cacheTarget, cacheData);
+    // Run init if this is the first execution
+    if (needsInit) {
+      init.apply(init, args);
+      needsInit = false;
+    }
+
+    // Run shouldUpdate
+    if (shouldUpdate) {
+      let cachePattern = args.concat();
+      cachePattern.splice(0, 0, cache);
+      if (!shouldUpdate.apply(shouldUpdate, cachePattern)) {
+        return;
       } else {
-        throw new Error('Invalid comparator supplied:', comparator);
-      }
-
-      if (!isNew) {
-        return result;
+        cache = args[0];
       }
     }
 
-    if (!hasRun) {
-      hasRun = true;
-      if (init) {
-        init.apply(init, args);
-      }
-    }
-
-    if (cacheEnabled && injectCache) {
-      args.splice(cache + 1, 0, cacheData);
-    }
-
-    result = fn.apply(fn, args);
-
-    cacheData = cacheTarget;
-
-    return result;
+    return fn.apply(fn, args);
   }
 }

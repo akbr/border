@@ -1,14 +1,13 @@
 {
   "name": "@akbr/border",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Modify functions' arguments.",
   "main": "index.js",
   "scripts": {
     "test": "node test.js"
   },
   "dependencies": {
-    "@akbr/get": "^1.0.3",
-    "shallowequal": "^0.2.2"
+    "@akbr/get": "^1.0.3"
   },
   "repository": {
     "type": "git",
