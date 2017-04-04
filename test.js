@@ -63,7 +63,13 @@ let multiPath = border((x, y) => x + y, {
 assert.equal(multiPath(null, nested, null, nested), "foofoo");
 
 
-// Step 4: shouldUpdate
+// Step 4: shouldUpdate (runs after first run)
+let onlyRunsAfterFirstExec = border(x => x, {
+  shouldUpdate: (prev, next) => assert.equal(0, 1)
+});
+onlyRunsAfterFirstExec();
+//onlyRunsAfterFirstExec(); <-- that would fail
+
 let cached = border(x => x, {
   shouldUpdate: (prev, next) => prev !== next
 });

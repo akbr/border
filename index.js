@@ -12,7 +12,7 @@ module.exports = function border(fn, options = {}) {
   // shouldUpdate
   const shouldUpdate = options.shouldUpdate;
 
-  var needsInit = init;
+  var firstRun = true;
   var cache;
 
   return function () {
@@ -41,21 +41,23 @@ module.exports = function border(fn, options = {}) {
     }
 
     // Run init if this is the first execution
-    if (needsInit) {
+    if (firstRun && init) {
       init.apply(init, args);
-      needsInit = false;
     }
 
     // Run shouldUpdate
     if (shouldUpdate) {
-      let cachePattern = args.concat();
-      cachePattern.splice(0, 0, cache);
-      if (!shouldUpdate.apply(shouldUpdate, cachePattern)) {
-        return;
-      } else {
-        cache = args[0];
+      if (!firstRun) {
+        let cachePattern = args.concat();
+        cachePattern.splice(0, 0, cache);
+        if (!shouldUpdate.apply(shouldUpdate, cachePattern)) {
+          return;
+        }
       }
+      cache = args[0];
     }
+
+    firstRun = false;
 
     return fn.apply(fn, args);
   }
